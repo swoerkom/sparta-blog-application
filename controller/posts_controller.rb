@@ -48,7 +48,12 @@ class PostController < Sinatra::Base ##Sinatra is a module, base is a class insi
   end
 
   get "/new" do
-    "NEW POST"
+    @post = {
+      id: "",
+      title: "",
+      body: ""
+    }
+
     erb :'posts/new'
   end
 
@@ -60,19 +65,24 @@ class PostController < Sinatra::Base ##Sinatra is a module, base is a class insi
   end
 
   delete "/:id" do
-    id = params[:id]
-    "Delete: #{id}"
+    id = params[:id].to_i
+    $posts.delete_at(id)
+    redirect "/"
   end
 
   put "/:id" do
-    id = params[:id]
-    "Update: #{id}"
+    id = params[:id].to_i
+    post = $posts[id]
+    post[:title] = params[:title]
+    post[:body] = params[:body]
+    $posts[id] = post
+    redirect "/"
+
   end
 
   get "/:id" do
     id = params[:id].to_i
     @post = $posts[id]
     erb :'posts/shows'
-
   end
 end
